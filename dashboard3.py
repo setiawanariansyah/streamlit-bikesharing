@@ -9,7 +9,7 @@ import random
 sns.set(style='whitegrid')
 
 # Load cleaned data
-data_gabung = pd.read_csv("data_gabung.csv")
+df_bikesharing = pd.read_csv("df_bikesharing.csv")
 
 with st.sidebar:
     # Menambahkan logo perusahaan
@@ -40,9 +40,9 @@ def create_byseason_hum_daily_df(df):
     byseason_hum_daily = df.groupby(by="season_daily").hum_daily.mean().reset_index()
     return byseason_hum_daily
 
-byseason_daily_df = create_byseason_daily_df(data_gabung)
-byseason_hourly_df = create_byseason_hourly_df(data_gabung)
-byseason_hum_daily = create_byseason_hum_daily_df(data_gabung)
+byseason_daily_df = create_byseason_daily_df(df_bikesharing)
+byseason_hourly_df = create_byseason_hourly_df(df_bikesharing)
+byseason_hum_daily = create_byseason_hum_daily_df(df_bikesharing)
 
 # plot
 st.header('Bike Sharing :sparkles:')
@@ -51,11 +51,11 @@ st.subheader('Jumlah Penyewaan Harian')
 col1, col2 = st.columns(2)
 
 with col1:
-    total_sewaharian = data_gabung.instant_daily.nunique()
+    total_sewaharian = df_bikesharing.instant_daily.nunique()
     st.metric("Total Sewa Harian dalam 2 Tahun", value=total_sewaharian)
 
 with col2:
-    total_pengguna = data_gabung.cnt_daily.sum() 
+    total_pengguna = df_bikesharing.cnt_daily.sum() 
     st.metric("Total Pengguna dalam 2 tahun", value=total_pengguna)
 
 
@@ -126,7 +126,7 @@ with col1:
     sns.lineplot(
         y="cnt_daily", 
         x="mnth_daily",
-        data=data_gabung,
+        data=df_bikesharing,
         palette=colors,
         ax=ax
     )
@@ -142,7 +142,7 @@ with col2:
     sns.lineplot(
         y="cnt_hourly", 
         x="hr",
-        data=data_gabung,
+        data=df_bikesharing,
         palette=colors,
         ax=ax
     )
@@ -163,7 +163,7 @@ colors = ["#90CAF9", "#D3D3D3", "#D3D3D3", "#D3D3D3", "#D3D3D3", "#D3D3D3", "#D3
 sns.boxplot(
     x="weathersit_daily", 
     y="hum_daily",
-    data=data_gabung,
+    data=df_bikesharing,
     palette=colors,
     ax=ax
 )
@@ -183,7 +183,7 @@ colors = ["#90CAF9", "#D3D3D3", "#D3D3D3", "#D3D3D3", "#D3D3D3", "#D3D3D3", "#D3
 sns.boxplot(
     x="workingday_daily", 
     y="cnt_daily",
-    data=data_gabung,
+    data=df_bikesharing,
     palette=colors,
     ax=ax
 )
@@ -198,8 +198,8 @@ st.text("Tidak ada perbedaan signifikan antara rata-rata peminjaman pada saat ha
 
 # Clustering dengan K-Means
 clustering = pd.DataFrame()
-clustering["kelembapan"] = data_gabung["hum_daily"]
-clustering["temperatur"] =  data_gabung["temp_daily"]
+clustering["kelembapan"] = df_bikesharing["hum_daily"]
+clustering["temperatur"] =  df_bikesharing["temp_daily"]
 
 # Menjalankan K-means dengan 2 kelompok
 kmeans = KMeans(n_clusters=2, random_state=42)
